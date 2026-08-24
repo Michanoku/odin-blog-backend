@@ -1,13 +1,13 @@
 import "./config/env.js";
 
 import express from "express";
-import passport from "passport";
+//import passport from "passport";
 import morgan from "morgan";
 
 import { prisma } from "./lib/prisma.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import frontendRoutes from "./routes/frontendRoutes.js";
-import "./config/passport.js";
+//import "./config/passport.js";
 
 const app = express();
 
@@ -18,8 +18,8 @@ if (process.env.NODE_ENV !== "test") {
 app.use(express.json());
 
 // Initialize passport
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 // Routes
 app.use("/admin", adminRoutes);
