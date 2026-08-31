@@ -16,7 +16,7 @@ model User {
   id        String    @id @default(cuid())
   username  String    @unique
   email String @unique
-  hash String @unique
+  hash String
   createdAt DateTime  @default(now())
   author    Boolean   @default(false)
   posts     Post[]    @relation("Posts")
@@ -26,12 +26,12 @@ model User {
 model Post {
   id          String    @id @default(cuid())
   createdAt   DateTime  @default(now())
-  publishedAt DateTime
+  publishedAt DateTime?
   title       String
   body        String
   published   Boolean
   comments    Comment[] @relation("PostComments")
-  userId      String    @unique
+  userId      String
   user        User      @relation("Posts", fields: [userId], references: [id])
 }
 
@@ -39,8 +39,8 @@ model Comment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   body      String
-  userId    String   @unique
+  userId    String
   user      User     @relation("UserComments", fields: [userId], references: [id])
-  postId    String   @unique
+  postId    String
   post      Post     @relation("PostComments", fields: [postId], references: [id])
 }

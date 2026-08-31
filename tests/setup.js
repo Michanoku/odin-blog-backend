@@ -3,6 +3,8 @@ import "../config/env.js";
 import { prisma } from "../lib/prisma.js";
 
 beforeAll(async () => {
+  await prisma.comment.deleteMany();
+  await prisma.post.deleteMany();
   await prisma.user.deleteMany();
 });
 
