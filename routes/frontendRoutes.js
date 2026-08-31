@@ -1,60 +1,61 @@
 import express from "express";
 import passport from "passport";
+import { optionalAuth, ownerAuth } from "../lib/authMiddleware.js";
+
 const router = express.Router();
 
 router.get(
   "/posts",
-  passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ user: req.user, action: "readall" });
+    res.json({ action: "readallposts" });
   },
 );
 
 router.get(
   "/posts/:postId",
-  passport.authenticate("jwt", { session: false }),
+  optionalAuth,
   (req, res) => {
-    res.json({ user: req.user, postId: req.params.postId, action: "read" });
+    res.json({ user: req.user, postId: req.params.postId, action: "readsinglepost" });
   },
 );
 
 router.get(
-  "/comments",
-  passport.authenticate("jwt", { session: false }),
+  "/posts/:postId/comments",
   (req, res) => {
-    res.json({ user: req.user, action: "readall" });
+    res.json( {postId: req.params.postId, action: "readallcomments" });
   },
 );
 
 router.post(
-  "/comments",
+  "/posts/:postId/comments",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ user: req.user, action: "create" });
+    res.json({ user: req.user, postId: req.params.postId, action: "createcomment" });
   },
 );
 
 router.get(
-  "/comments/:commentId",
-  passport.authenticate("jwt", { session: false }),
+  "/posts/:postId/comments/:commentId",
   (req, res) => {
-    res.json({ user: req.user,commentId: req.params.commentId, action: "read" });
+    res.json({ postId: req.params.postId, commentId: req.params.commentId, action: "readsinglecomment" });
   },
 );
 
 router.put(
-  "/comments/:commentId",
+  "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
+  ownerAuth,
   (req, res) => {
-    res.json({ user: req.user,commentId: req.params.commentId, action: "update" });
+    res.json({ user: req.user, postId: req.params.postId, commentId: req.params.commentId, action: "updatecomment" });
   },
 );
 
 router.delete(
-  "/comments/:commentId",
+  "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
+  ownerAuth,
   (req, res) => {
-    res.json({ user: req.user,commentId: req.params.commentId, action: "delete" });
+    res.json({ user: req.user, postId: req.params.postId, commentId: req.params.commentId, action: "deletecomment" });
   },
 );
 

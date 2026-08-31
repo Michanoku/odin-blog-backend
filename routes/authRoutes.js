@@ -18,7 +18,7 @@ router.post("/register", async (req, res, next) => {
       });
     }
 
-    const hash = await generateHash(password);
+    const hash = generateHash(password);
 
     const user = await db.createUser(username, email, hash)
 
@@ -48,6 +48,11 @@ router.post(
 
 router.get("/login", (req, res) => {
   res.send("THIS IS GONNA BE THE LOGIN HTML");
+});
+
+
+router.get("/register", (req, res) => {
+  res.send("THIS IS GONNA BE THE REGISTER HTML");
 });
 
 export default router;

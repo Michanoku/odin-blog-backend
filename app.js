@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import frontendRoutes from "./routes/frontendRoutes.js";
 import "./config/passport-local.js";
+import "./config/passport-jwt.js";
 
 const app = express();
 
