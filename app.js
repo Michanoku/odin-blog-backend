@@ -7,6 +7,7 @@ import morgan from "morgan";
 import userRoutes from "./routes/userRoutes.js";
 import authorRoutes from "./routes/authorRoutes.js";
 import frontendRoutes from "./routes/frontendRoutes.js";
+
 import "./config/passport-local.js";
 import "./config/passport-jwt.js";
 
