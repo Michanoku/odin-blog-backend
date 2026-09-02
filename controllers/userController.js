@@ -94,12 +94,19 @@ const validateUpdate = [
     .withMessage(`Password must be between 12 and 72 characters.`),
   body("confirmation")
     .trim()
-    .optional({ checkFalsy: true })
     .custom((value, { req }) => {
-      const confirmation = req.body.password === value;
-      if (!confirmation) {
+      if (!req.body.password && !value) {
+        return true;
+      }
+
+      if (!value) {
+        throw new Error("Confirmation is required.");
+      }
+
+      if (req.body.password !== value) {
         throw new Error("Confirmation does not match password.");
       }
+
       return true;
     }),
   body("current-password")
@@ -170,8 +177,8 @@ const update = [
     try {
       const updatedUser = await db.updateUser(
         req.user.id,
-        email,
         username,
+        email,
         hash,
       );
       return res.status(200).json({
