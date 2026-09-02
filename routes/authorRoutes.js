@@ -1,37 +1,46 @@
 import express from "express";
 import passport from "passport";
+import { authorAuth, postOwnerAuth } from "../lib/authMiddleware.js";
+import * as authorController from "../controllers/authorController.js";
+
 const router = express.Router();
 
-// router.post(
-//   "/posts",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     res.json({ user: req.user, action: "create" });
-//   },
-// );
+router.get(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  authorController.postsGetAll,
+);
 
-// router.get(
-//   "/posts/:postId",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     res.json({ user: req.user, postId: req.params.postId, action: "read" });
-//   },
-// );
+router.post(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  authorController.postsCreate,
+);
 
-// router.put(
-//   "/posts/:postId",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     res.json({ user: req.user, postId: req.params.postId, action: "update" });
-//   },
-// );
+router.get(
+  "/posts/:postId",
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  postOwnerAuth,
+  authorController.postsGet,
+);
 
-// router.delete(
-//   "/posts/:postId",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     res.json({ user: req.user, postId: req.params.postId, action: "delete" });
-//   },
-// );
+router.put(
+  "/posts/:postId",
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  postOwnerAuth,
+  authorController.postsUpdate,
+);
+
+router.delete(
+  "/posts/:postId",
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  postOwnerAuth,
+  authorController.postsDelete,
+);
 
 export default router;

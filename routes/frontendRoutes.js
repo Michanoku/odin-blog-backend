@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { optionalAuth, ownerAuth } from "../lib/authMiddleware.js";
+import { optionalAuth, commentOwnerAuth } from "../lib/authMiddleware.js";
 import * as frontendController from "../controllers/frontendController.js";
 
 const router = express.Router();
@@ -25,14 +25,14 @@ router.post(
 router.put(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
-  ownerAuth,
+  commentOwnerAuth,
   frontendController.commentsUpdate,
 );
 
 router.delete(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
-  ownerAuth,
+  commentOwnerAuth,
   frontendController.commentsDelete,
 );
 
