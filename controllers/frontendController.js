@@ -1,9 +1,9 @@
 import * as commentQueries from "../db/commentQueries.js";
-import * as postQueries from "../db/postQueries.js";
+import { getAllPosts, getPost } from "../db/postQueries.js";
 
 const postsGetAll = async (req, res, next) => {
   try {
-    const posts = await postQueries.lookupAllPosts();
+    const posts = await getAllPosts();
     return res.status(200).json(posts);
   } catch (err) {
     return next(err);
@@ -12,7 +12,7 @@ const postsGetAll = async (req, res, next) => {
 
 const postsGetSingle = async (req, res, next) => {
   try {
-    const post = await postQueries.lookupPostById(req.params.postId);
+    const post = await getPost(req.params.postId);
     return res.status(200).json(post);
   } catch (err) {
     return next(err);
@@ -21,7 +21,7 @@ const postsGetSingle = async (req, res, next) => {
 
 const commentsGetAll = async (req, res, next) => {
   try {
-    const comments = await commentQueries.lookupAllPostComments(
+    const comments = await commentQueries.getAllComments(
       req.params.postId,
     );
     return res.status(200).json(comments);
@@ -32,7 +32,7 @@ const commentsGetAll = async (req, res, next) => {
 
 const commentsGetSingle = async (req, res, next) => {
   try {
-    const comment = await commentQueries.lookupCommentById(
+    const comment = await commentQueries.getComment(
       req.params.commentId,
     );
     return res.status(200).json(comment);

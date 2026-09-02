@@ -5,12 +5,13 @@ describe("Authentication", () => {
   const user = {
     username: "testuser",
     email: "test@example.com",
+    confirmation: "testpassword123",
     password: "testpassword123",
   };
 
   test("creates a new user", async () => {
     const response = await request(app)
-      .post("/register")
+      .post("/user/register")
       .send(user);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("id");
@@ -21,7 +22,7 @@ describe("Authentication", () => {
 
   test("logs the user in and returns a JWT", async () => {
     const response = await request(app)
-      .post("/login")
+      .post("/user/login")
       .send({
         email: user.email,
         password: user.password,

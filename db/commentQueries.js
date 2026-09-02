@@ -26,7 +26,7 @@ const deleteComment = async (id) => {
 };
 
 // Look up a comment by its ID
-const lookupCommentById = async (id) => {
+const getComment = async (id) => {
   return await prisma.comment.findUnique({
     where: { id },
     include: {
@@ -41,7 +41,7 @@ const lookupCommentById = async (id) => {
 };
 
 // Look up all comments by their post
-const lookupAllPostComments = async (postId) => {
+const getAllComments = async (postId) => {
   return await prisma.comment.findMany({
     where: { postId },
     orderBy: {
@@ -62,6 +62,6 @@ export {
   createComment,
   updateComment,
   deleteComment,
-  lookupCommentById,
-  lookupAllPostComments,
+  getComment,
+  getAllComments,
 };
