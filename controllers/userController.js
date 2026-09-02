@@ -108,12 +108,12 @@ const validateUpdate = [
     .withMessage("Current password is required.")
     .bail()
     .custom((value, { req }) => {
-    const validation = validatePassword(value, req.user.hash);
-    if (!validation) {
-      throw new Error("Current password is incorrect.");
-    }
-    return true;
-  }),
+      const validation = validatePassword(value, req.user.hash);
+      if (!validation) {
+        throw new Error("Current password is incorrect.");
+      }
+      return true;
+    }),
 ];
 
 // Post route for register page

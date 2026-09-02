@@ -10,9 +10,7 @@ describe("Authentication", () => {
   };
 
   test("creates a new user", async () => {
-    const response = await request(app)
-      .post("/user/register")
-      .send(user);
+    const response = await request(app).post("/user/register").send(user);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("id");
     expect(response.body.email).toBe(user.email);
@@ -21,12 +19,10 @@ describe("Authentication", () => {
   });
 
   test("logs the user in and returns a JWT", async () => {
-    const response = await request(app)
-      .post("/user/login")
-      .send({
-        email: user.email,
-        password: user.password,
-      });
+    const response = await request(app).post("/user/login").send({
+      email: user.email,
+      password: user.password,
+    });
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("token");

@@ -76,7 +76,8 @@ describe("Author Post Routes", () => {
         .set("Authorization", `Bearer ${tokenA}`)
         .send({
           postTitle: "We need more crystals!",
-          postBody: "Morty if you read this get into the garage, we need to go get more crystals Morty.",
+          postBody:
+            "Morty if you read this get into the garage, we need to go get more crystals Morty.",
           published: false,
         });
 
@@ -142,13 +143,16 @@ describe("Author Post Routes", () => {
         .set("Authorization", `Bearer ${tokenA}`)
         .send({
           postTitle: "Who ate the alien virus in the fridge?",
-          postBody: "To whoever ate the alien virus I put in the fridge, unless you want your insides to come outside, come to the garage to confess.",
+          postBody:
+            "To whoever ate the alien virus I put in the fridge, unless you want your insides to come outside, come to the garage to confess.",
           published: false,
         });
 
       expect(response.statusCode).toBe(201);
       expect(response.body).toHaveProperty("id");
-      expect(response.body.title).toBe("Who ate the alien virus in the fridge?");
+      expect(response.body.title).toBe(
+        "Who ate the alien virus in the fridge?",
+      );
     });
 
     test("non-author user cannot create a post", async () => {
@@ -165,13 +169,11 @@ describe("Author Post Routes", () => {
     });
 
     test("unauthenticated user cannot create a post", async () => {
-      const response = await request(app)
-        .post("/author/posts")
-        .send({
-          postTitle: "This is GearHead!",
-          postBody: "Are you interested in my newsletter about the gear wars?",
-          published: false,
-        });
+      const response = await request(app).post("/author/posts").send({
+        postTitle: "This is GearHead!",
+        postBody: "Are you interested in my newsletter about the gear wars?",
+        published: false,
+      });
 
       expect(response.statusCode).toBe(401);
     });
@@ -216,7 +218,8 @@ describe("Author Post Routes", () => {
         .set("Authorization", `Bearer ${tokenA}`)
         .send({
           postTitle: "That should be enough crystals...",
-          postBody: "I'm over the crystals Morty, seriously, I found something way better!",
+          postBody:
+            "I'm over the crystals Morty, seriously, I found something way better!",
           published: false,
         });
 

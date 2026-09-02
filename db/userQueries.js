@@ -3,14 +3,14 @@ import { prisma } from "../lib/prisma.js";
 
 // Create a new user with the email and the hash provided
 const createUser = async (username, email, hash) => {
-    const user = await prisma.user.create({
-      data: {
-        username,
-        email,
-        hash,
-      },
-    });
-    return user;
+  const user = await prisma.user.create({
+    data: {
+      username,
+      email,
+      hash,
+    },
+  });
+  return user;
 };
 
 const updateUser = async (id, username, email, hash) => {
@@ -67,4 +67,11 @@ const lookupUserById = async (userId) => {
   });
 };
 
-export { createUser, lookupUserByEmail,lookupUserByUsername, lookupUserById, updateUser, changeAuthorStatus };
+export {
+  createUser,
+  lookupUserByEmail,
+  lookupUserByUsername,
+  lookupUserById,
+  updateUser,
+  changeAuthorStatus,
+};

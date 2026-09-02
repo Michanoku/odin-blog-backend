@@ -21,9 +21,7 @@ const postsGetSingle = async (req, res, next) => {
 
 const commentsGetAll = async (req, res, next) => {
   try {
-    const comments = await commentQueries.getAllComments(
-      req.params.postId,
-    );
+    const comments = await commentQueries.getAllComments(req.params.postId);
     return res.status(200).json(comments);
   } catch (err) {
     return next(err);
@@ -32,9 +30,7 @@ const commentsGetAll = async (req, res, next) => {
 
 const commentsGetSingle = async (req, res, next) => {
   try {
-    const comment = await commentQueries.getComment(
-      req.params.commentId,
-    );
+    const comment = await commentQueries.getComment(req.params.commentId);
     return res.status(200).json(comment);
   } catch (err) {
     return next(err);

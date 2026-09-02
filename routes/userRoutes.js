@@ -15,14 +15,12 @@ router.put(
   "/profile",
   passport.authenticate("jwt", { session: false }),
   userController.update,
-)
+);
 
 router.put(
   "/authorStatus/:authorStatus",
   passport.authenticate("jwt", { session: false }),
   userController.changeAuthorStatus,
-)
-
-
+);
 
 export default router;
