@@ -33,11 +33,27 @@ const updateUser = async (id, username, email, hash) => {
   });
 };
 
+const changeAuthorStatus = async (id, status) => {
+  return await prisma.user.update({
+    where: { id },
+    data: { author: status },
+  });
+};
+
 // Look up a user by their email
 const lookupUserByEmail = async (email) => {
   return await prisma.user.findUnique({
     where: {
       email,
+    },
+  });
+};
+
+// Look up a user by their username
+const lookupUserByUsername = async (username) => {
+  return await prisma.user.findUnique({
+    where: {
+      username,
     },
   });
 };
@@ -51,4 +67,4 @@ const lookupUserById = async (userId) => {
   });
 };
 
-export { createUser, lookupUserByEmail, lookupUserById, updateUser };
+export { createUser, lookupUserByEmail,lookupUserByUsername, lookupUserById, updateUser, changeAuthorStatus };
