@@ -6,6 +6,7 @@ describe("Post and Comment Routes", () => {
   const user = {
     username: "routetest",
     email: "routetest@example.com",
+    confirmation: "testpassword123",
     password: "testpassword123",
   };
 
@@ -13,6 +14,7 @@ describe("Post and Comment Routes", () => {
     username: "otherroutetest",
     email: "other@example.com",
     password: "testpassword123",
+    confirmation: "testpassword123",
   };
 
   let token;
@@ -22,18 +24,18 @@ describe("Post and Comment Routes", () => {
 
   beforeAll(async () => {
     // Create test users
-    await request(app).post("/register").send(user);
-    await request(app).post("/register").send(otherUser);
+    await request(app).post("/user/register").send(user);
+    await request(app).post("/user/register").send(otherUser);
 
     // Log in and save JWTs
-    const loginResponse = await request(app).post("/login").send({
+    const loginResponse = await request(app).post("/user/login").send({
       email: user.email,
       password: user.password,
     });
 
     token = loginResponse.body.token;
 
-    const otherLoginResponse = await request(app).post("/login").send({
+    const otherLoginResponse = await request(app).post("/user/login").send({
       email: otherUser.email,
       password: otherUser.password,
     });

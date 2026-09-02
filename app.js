@@ -22,8 +22,8 @@ app.use(express.json());
 app.use(passport.initialize());
 
 // Routes
-app.use("/", authRoutes);
-app.use("/", adminRoutes);
+app.use("/user", userRoutes);
+app.use("/author", authorRoutes);
 app.use("/", frontendRoutes);
 
 app.use((req, res) => {
