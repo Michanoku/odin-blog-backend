@@ -54,6 +54,8 @@ describe("Post and Comment Routes", () => {
         body: "This is a test post.",
         published: true,
         userId: testUser.id,
+        category: "test",
+        slug: "testPost",
       },
     });
 

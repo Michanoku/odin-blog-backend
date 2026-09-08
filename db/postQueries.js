@@ -44,11 +44,13 @@ const getAllUserPosts = async (userId) => {
 };
 
 // Create a new post
-const createUserPost = async (userId, title, body, published) => {
+const createUserPost = async (userId, title, body, category, slug, published) => {
   const data = {
     userId,
     title,
     body,
+    category,
+    slug,
     published,
   };
   if (published) {
@@ -58,10 +60,12 @@ const createUserPost = async (userId, title, body, published) => {
   return post;
 };
 
-const updateUserPost = async (id, title, body, published) => {
+const updateUserPost = async (id, title, body, category, slug, published) => {
   const data = {
     title,
     body,
+    category,
+    slug,
     published,
   };
   const existingPost = await prisma.post.findUnique({ where: { id } });

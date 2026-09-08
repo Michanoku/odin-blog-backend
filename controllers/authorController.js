@@ -1,3 +1,5 @@
+import slugify from "slugify";
+
 import {
   getAllUserPosts,
   createUserPost,
@@ -25,11 +27,18 @@ const postsGet = async (req, res) => {
 };
 
 const postsCreate = async (req, res, next) => {
+  const category = req.body.postCategory ? req.body.postCategory : "Uncategorized";
+  const slug = slugify(req.body.postTitle, {
+    lower: true,
+    strict: true,
+  });
   try {
     const post = await createUserPost(
       req.user.id,
       req.body.postTitle,
       req.body.postBody,
+      category,
+      slug,
       req.body.published,
     );
     return res.status(201).json(post);
@@ -39,11 +48,18 @@ const postsCreate = async (req, res, next) => {
 };
 
 const postsUpdate = async (req, res, next) => {
+  const category = req.body.postCategory ? req.body.postCategory : "Uncategorized";
+  const slug = slugify(req.body.postTitle, {
+    lower: true,
+    strict: true,
+  });
   try {
     const post = await updateUserPost(
       req.params.postId,
       req.body.postTitle,
       req.body.postBody,
+      category,
+      slug,
       req.body.published,
     );
     return res.status(200).json(post);

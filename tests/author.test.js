@@ -78,6 +78,7 @@ describe("Author Post Routes", () => {
           postTitle: "We need more crystals!",
           postBody:
             "Morty if you read this get into the garage, we need to go get more crystals Morty.",
+          postCategory: "crystals",
           published: false,
         });
 
@@ -103,6 +104,7 @@ describe("Author Post Routes", () => {
         .send({
           postTitle: "Stop busting into my room!",
           postBody: "Someday you're gonna see something!",
+          postCategory: "privacy",
           published: false,
         });
 
@@ -145,6 +147,7 @@ describe("Author Post Routes", () => {
           postTitle: "Who ate the alien virus in the fridge?",
           postBody:
             "To whoever ate the alien virus I put in the fridge, unless you want your insides to come outside, come to the garage to confess.",
+          postCategory: "virus",
           published: false,
         });
 
@@ -162,6 +165,7 @@ describe("Author Post Routes", () => {
         .send({
           postTitle: "This is my house!",
           postBody: "Stop putting alien viruses in the fridge!",
+          postCategory: "virus",
           published: false,
         });
 
@@ -172,6 +176,7 @@ describe("Author Post Routes", () => {
       const response = await request(app).post("/author/posts").send({
         postTitle: "This is GearHead!",
         postBody: "Are you interested in my newsletter about the gear wars?",
+        postCategory: "gearwars",
         published: false,
       });
 
@@ -220,6 +225,7 @@ describe("Author Post Routes", () => {
           postTitle: "That should be enough crystals...",
           postBody:
             "I'm over the crystals Morty, seriously, I found something way better!",
+          postCategory: "no-more-crystals",
           published: false,
         });
 
@@ -235,6 +241,7 @@ describe("Author Post Routes", () => {
         .send({
           postTitle: "I hacked Rick!",
           postBody: "Who's evil Morty now?",
+          postCategory: "evil-morty",
           published: false,
         });
 
@@ -248,6 +255,7 @@ describe("Author Post Routes", () => {
         .send({
           postTitle: "Jerry is the best!",
           postBody: "I love Jerry, everyone loves Jerry. I just had to say it.",
+          postCategory: "jerry-love",
           published: false,
         });
 
@@ -260,6 +268,7 @@ describe("Author Post Routes", () => {
         .send({
           postTitle: "Gear Wars Update 242",
           postBody: "Follow the link to enlarge your gears!",
+          postCategory: "gear-enlargement",
           published: false,
         });
 

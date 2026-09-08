@@ -15,8 +15,8 @@ datasource db {
 model User {
   id        String    @id @default(cuid())
   username  String    @unique
-  email String @unique
-  hash String
+  email     String    @unique
+  hash      String
   createdAt DateTime  @default(now())
   author    Boolean   @default(false)
   posts     Post[]    @relation("Posts")
@@ -29,6 +29,8 @@ model Post {
   publishedAt DateTime?
   title       String
   body        String
+  category    String
+  slug        String    @unique
   published   Boolean
   comments    Comment[] @relation("PostComments")
   userId      String
