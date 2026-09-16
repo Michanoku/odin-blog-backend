@@ -3,6 +3,7 @@ import "./config/env.js";
 import express from "express";
 import passport from "passport";
 import morgan from "morgan";
+import cors from "cors";
 
 import userRoutes from "./routes/userRoutes.js";
 import authorRoutes from "./routes/authorRoutes.js";
@@ -21,6 +22,10 @@ app.use(express.json());
 
 // Initialize passport
 app.use(passport.initialize());
+
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
 
 // Routes
 app.use("/user", userRoutes);
