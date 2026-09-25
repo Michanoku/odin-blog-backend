@@ -8,6 +8,9 @@ const createComment = async (userId, postId, body) => {
       postId,
       body,
     },
+    include: {
+      user: true,
+    },
   });
   return comment;
 };

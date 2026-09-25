@@ -12,9 +12,9 @@ describe("Authentication", () => {
   test("creates a new user", async () => {
     const response = await request(app).post("/user/register").send(user);
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("id");
-    expect(response.body.email).toBe(user.email);
-    expect(response.body.username).toBe(user.username);
+    expect(response.body).toHaveProperty("user");
+    expect(response.body.user.email).toBe(user.email);
+    expect(response.body.user.username).toBe(user.username);
     expect(response.body).not.toHaveProperty("hash");
   });
 
@@ -42,7 +42,7 @@ describe("Authentication", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         username: "HughJackman",
-        "current-password": user.password,
+        currentPassword: user.password,
       });
 
     expect(response.statusCode).toBe(200);
@@ -65,7 +65,7 @@ describe("Authentication", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         email: "hugh@twobrothers.com",
-        "current-password": user.password,
+        currentPassword: user.password,
       });
 
     expect(response.statusCode).toBe(200);
@@ -88,7 +88,7 @@ describe("Authentication", () => {
       .send({
         password: "imgoingtotakeahugeackman",
         confirmation: "imgoingtotakeahugeackman",
-        "current-password": user.password,
+        currentPassword: user.password,
       });
 
     expect(response.statusCode).toBe(200);
@@ -117,7 +117,7 @@ describe("Authentication", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         username: "GearHead",
-        "current-password": "wrongpassword123",
+        currentPassword: "wrongpassword123",
       });
 
     expect(response.statusCode).toBe(400);

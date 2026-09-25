@@ -109,7 +109,7 @@ const validateUpdate = [
 
       return true;
     }),
-  body("current-password")
+  body("currentPassword")
     .trim()
     .notEmpty()
     .withMessage("Current password is required.")
@@ -139,11 +139,16 @@ const register = [
 
     try {
       const user = await db.createUser(username, email, hash);
-
+      const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
+        expiresIn: "72h",
+      });
       return res.status(201).json({
-        id: user.id,
-        email: user.email,
-        username: user.username,
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        },
       });
     } catch (err) {
       return next(err);
@@ -155,8 +160,14 @@ const login = (req, res) => {
   const token = jwt.sign({ userId: req.user.id }, process.env.SECRET_KEY, {
     expiresIn: "72h",
   });
-
-  res.json({ token });
+  return res.status(200).json({
+    token,
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      username: req.user.username,
+    },
+  });
 };
 
 // Update user info
@@ -201,4 +212,12 @@ const changeAuthorStatus = async (req, res) => {
   });
 };
 
-export { register, login, update, changeAuthorStatus };
+const getCurrentUser = (req, res) => {
+  return res.status(200).json({
+    id: req.user.id,
+    email: req.user.email,
+    username: req.user.username,
+  });
+};
+
+export { register, login, update, changeAuthorStatus, getCurrentUser };

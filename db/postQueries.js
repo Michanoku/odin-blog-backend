@@ -15,10 +15,13 @@ const getPost = async (id) => {
   });
 };
 
-// Look up all posts
-const getAllPosts = async () => {
+// Look up all posts (optional category)
+const getAllPosts = async (category) => {
   return await prisma.post.findMany({
-    where: { published: true },
+    where: {
+      published: true,
+      ...(category && { category }),
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -44,7 +47,14 @@ const getAllUserPosts = async (userId) => {
 };
 
 // Create a new post
-const createUserPost = async (userId, title, body, category, slug, published) => {
+const createUserPost = async (
+  userId,
+  title,
+  body,
+  category,
+  slug,
+  published,
+) => {
   const data = {
     userId,
     title,
