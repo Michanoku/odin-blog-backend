@@ -19,6 +19,9 @@ const updateComment = async (id, body) => {
   return await prisma.comment.update({
     where: { id },
     data: { body },
+    include: {
+      user: true,
+    },
   });
 };
 
