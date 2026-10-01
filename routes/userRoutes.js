@@ -40,7 +40,22 @@ router.put(
 
 router.get(
   "/me",
-  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    passport.authenticate("jwt", { session: false }, (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(401).json({
+          message: info?.message || "Authentication required.",
+        });
+      }
+
+      req.user = user;
+      return next();
+    })(req, res, next);
+  },
   userController.getCurrentUser,
 );
 
