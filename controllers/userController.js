@@ -148,6 +148,7 @@ const register = [
           id: user.id,
           email: user.email,
           username: user.username,
+          author: user.author,
         },
       });
     } catch (err) {
@@ -166,6 +167,7 @@ const login = (req, res) => {
       id: req.user.id,
       email: req.user.email,
       username: req.user.username,
+      author: req.user.author,
     },
   });
 };
@@ -196,6 +198,7 @@ const update = [
         id: updatedUser.id,
         email: updatedUser.email,
         username: updatedUser.username,
+        author: updatedUser.author,
       });
     } catch (err) {
       return next(err);
@@ -217,6 +220,7 @@ const getCurrentUser = (req, res) => {
     id: req.user.id,
     email: req.user.email,
     username: req.user.username,
+    author: req.user.author,
   });
 };
 

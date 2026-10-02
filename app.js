@@ -23,9 +23,14 @@ app.use(express.json());
 // Initialize passport
 app.use(passport.initialize());
 
-app.use(cors({
-  origin: "http://localhost:5173",
-}));
+app.use(
+  cors({
+    origin: [
+      process.env.FRONTEND_URL,
+      process.env.BACKEND_URL,
+    ],
+  }),
+);
 
 // Routes
 app.use("/user", userRoutes);

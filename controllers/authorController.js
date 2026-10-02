@@ -3,7 +3,7 @@ import slugify from "slugify";
 import {
   getAllUserPosts,
   createUserPost,
-  getPost,
+  getUserPost,
   updateUserPost,
   deleteUserPost,
 } from "../db/postQueries.js";
@@ -19,7 +19,7 @@ const postsGetAll = async (req, res) => {
 
 const postsGet = async (req, res) => {
   try {
-    const post = await getPost(req.params.postId);
+    const post = await getUserPost(req.user.id, req.params.postId);
     return res.status(200).json(post);
   } catch (err) {
     return next(err);
@@ -55,6 +55,7 @@ const postsUpdate = async (req, res, next) => {
   });
   try {
     const post = await updateUserPost(
+      req.user.id,
       req.params.postId,
       req.body.postTitle,
       req.body.postBody,
@@ -70,11 +71,28 @@ const postsUpdate = async (req, res, next) => {
 
 const postsDelete = async (req, res, next) => {
   try {
-    await deleteUserPost(req.params.postId);
+    await deleteUserPost(req.user.id, req.params.postId);
     return res.status(204).send();
   } catch (err) {
     return next(err);
   }
 };
 
-export { postsGetAll, postsGet, postsCreate, postsUpdate, postsDelete };
+const getCurrentUser = (req, res) => {
+
+  if (!req.user.author) {
+    return res.status(403).json({
+      message: "Author access required.",
+    });
+  }
+
+  return res.status(200).json({
+    id: req.user.id,
+    email: req.user.email,
+    username: req.user.username,
+    author: req.user.author,
+  });
+
+};
+
+export { postsGetAll, postsGet, postsCreate, postsUpdate, postsDelete, getCurrentUser };

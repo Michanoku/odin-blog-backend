@@ -46,6 +46,21 @@ const getAllUserPosts = async (userId) => {
   });
 };
 
+// Look up a post by its ID and user
+const getUserPost = async (userId, id) => {
+  return await prisma.post.findUnique({
+    where: { userId, id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+};
+
 // Create a new post
 const createUserPost = async (
   userId,
@@ -70,7 +85,7 @@ const createUserPost = async (
   return post;
 };
 
-const updateUserPost = async (id, title, body, category, slug, published) => {
+const updateUserPost = async (userId, id, title, body, category, slug, published) => {
   const data = {
     title,
     body,
@@ -78,7 +93,7 @@ const updateUserPost = async (id, title, body, category, slug, published) => {
     slug,
     published,
   };
-  const existingPost = await prisma.post.findUnique({ where: { id } });
+  const existingPost = await prisma.post.findUnique({ where: { userId, id } });
   if (existingPost.published !== published) {
     if (published) {
       data.publishedAt = new Date();
@@ -87,20 +102,21 @@ const updateUserPost = async (id, title, body, category, slug, published) => {
     }
   }
   return await prisma.post.update({
-    where: { id },
+    where: { userId, id },
     data,
   });
 };
 
-const deleteUserPost = async (id) => {
+const deleteUserPost = async (userId, id) => {
   return await prisma.post.delete({
-    where: { id },
+    where: { userId, id },
   });
 };
 
 export {
   getPost,
   getAllPosts,
+  getUserPost,
   getAllUserPosts,
   createUserPost,
   updateUserPost,
