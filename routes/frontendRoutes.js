@@ -5,23 +5,23 @@ import * as frontendController from "../controllers/frontendController.js";
 
 const router = express.Router();
 
-router.get("/posts", frontendController.postsGetAll);
+// View all posts
+router.get("/posts", optionalAuth, frontendController.postsGetAll);
 
+// View a single post
 router.get("/posts/:postId", optionalAuth, frontendController.postsGetSingle);
 
+// View all comments of a post
 router.get("/posts/:postId/comments", frontendController.commentsGetAll);
 
-router.get(
-  "/posts/:postId/comments/:commentId",
-  frontendController.commentsGetSingle,
-);
-
+// Post new comment on a post
 router.post(
   "/posts/:postId/comments",
   passport.authenticate("jwt", { session: false }),
   frontendController.commentsCreate,
 );
 
+// Update a comment on a post
 router.put(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
@@ -29,6 +29,7 @@ router.put(
   frontendController.commentsUpdate,
 );
 
+// Delete a comment on a post
 router.delete(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),

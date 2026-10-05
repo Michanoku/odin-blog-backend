@@ -7,20 +7,23 @@ import { login } from "../controllers/userController.js";
 
 const router = express.Router();
 
+// Login the user with username and password
 router.post(
   "/login",
   (req, res, next) => {
-    passport.authenticate("local", { session: false }, (err, user, info) => {
+    passport.authenticate("local", { session: false }, (err, user) => {
       if (err) {
         return next(err);
       }
 
+      // If there is no user found, return message
       if (!user) {
         return res.status(401).json({
-          message: info?.message || "Incorrect email or password.",
+          message: "Incorrect email or password.",
         });
       }
 
+      // If the user is not an author, reject
       if (!user.author) {
         return res.status(403).json({
           message: "Author access required.",
@@ -34,6 +37,7 @@ router.post(
   login,
 );
 
+// Get all posts of the author
 router.get(
   "/posts",
   passport.authenticate("jwt", { session: false }),
@@ -41,6 +45,7 @@ router.get(
   authorController.postsGetAll,
 );
 
+// Create a new post
 router.post(
   "/posts",
   passport.authenticate("jwt", { session: false }),
@@ -48,6 +53,7 @@ router.post(
   authorController.postsCreate,
 );
 
+// Get a single post by the author
 router.get(
   "/posts/:postId",
   passport.authenticate("jwt", { session: false }),
@@ -56,6 +62,7 @@ router.get(
   authorController.postsGet,
 );
 
+// Update a single post by the author
 router.put(
   "/posts/:postId",
   passport.authenticate("jwt", { session: false }),
@@ -64,6 +71,7 @@ router.put(
   authorController.postsUpdate,
 );
 
+// Delete a single post by the author
 router.delete(
   "/posts/:postId",
   passport.authenticate("jwt", { session: false }),
@@ -72,6 +80,7 @@ router.delete(
   authorController.postsDelete,
 );
 
+// Get all comments on the author post
 router.get(
   "/posts/:postId/comments",
   passport.authenticate("jwt", { session: false }),
@@ -80,15 +89,7 @@ router.get(
   frontendController.commentsGetAll,
 );
 
-router.get(
-  "/posts/:postId/comments/:commentId",
-  passport.authenticate("jwt", { session: false }),
-
-  authorAuth,
-  postOwnerAuth,
-  frontendController.commentsGetSingle,
-);
-
+// Post a new comment on the author post
 router.post(
   "/posts/:postId/comments",
   passport.authenticate("jwt", { session: false }),
@@ -97,6 +98,7 @@ router.post(
   frontendController.commentsCreate,
 );
 
+// Update a comment on the author post
 router.put(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
@@ -105,6 +107,7 @@ router.put(
   frontendController.commentsUpdate,
 );
 
+// Delete a comment on the author post
 router.delete(
   "/posts/:postId/comments/:commentId",
   passport.authenticate("jwt", { session: false }),
@@ -113,25 +116,12 @@ router.delete(
   frontendController.commentsDelete,
 );
 
+// Get the current author using the jwt
 router.get(
   "/me",
-  (req, res, next) => {
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (!user) {
-        return res.status(401).json({
-          message: info?.message || "Authentication required.",
-        });
-      }
-
-      req.user = user;
-      return next();
-    })(req, res, next);
-  },
-  authorController.getCurrentUser,
+  passport.authenticate("jwt", { session: false }),
+  authorAuth,
+  authorController.getCurrentAuthor,
 );
 
 export default router;
