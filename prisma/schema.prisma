@@ -30,7 +30,6 @@ model Post {
   title       String
   body        String
   category    String
-  slug        String    @unique
   published   Boolean
   comments    Comment[] @relation("PostComments")
   userId      String
