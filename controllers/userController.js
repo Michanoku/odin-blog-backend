@@ -3,7 +3,7 @@ import { body, validationResult, matchedData } from "express-validator";
 import { validatePassword, generateHash } from "../lib/passwordUtils.js";
 import * as db from "../db/userQueries.js";
 
-// Validation for user registration
+// Validation for user registration, all fields are required
 const validateRegister = [
   body("email")
     .trim()
@@ -17,7 +17,8 @@ const validateRegister = [
     .isLength({ max: 255 })
     .withMessage("Email must be 255 characters or fewer")
     .custom(async (value) => {
-      const existingUser = await db.lookupUserByEmail(value);
+      // Make sure the email is not already in the system
+      const existingUser = await db.lookupUser({ email: value });
       if (existingUser) {
         throw new Error("Email already registered.");
       }
@@ -31,7 +32,8 @@ const validateRegister = [
     .isLength({ min: 3, max: 32 })
     .withMessage("Username must be between 3 and 32 characters.")
     .custom(async (value) => {
-      const existingUser = await db.lookupUserByUsername(value);
+      // Make sure the username isn't already in the system
+      const existingUser = await db.lookupUser({ username: value });
       if (existingUser) {
         throw new Error("Username already exists.");
       }
@@ -50,6 +52,7 @@ const validateRegister = [
     .withMessage("Confirmation is required.")
     .bail()
     .custom((value, { req }) => {
+      // Password must match confirmation
       const confirmation = req.body.password === value;
       if (!confirmation) {
         throw new Error("Confirmation does not match password.");
@@ -58,6 +61,10 @@ const validateRegister = [
     }),
 ];
 
+/* 
+Validation for user update, all fields are optional, but the current password
+must be provided. If a new password was set, the confirmation is also required.
+*/
 const validateUpdate = [
   body("email")
     .trim()
@@ -69,7 +76,8 @@ const validateUpdate = [
     .isLength({ max: 255 })
     .withMessage("Email must be 255 characters or fewer")
     .custom(async (value) => {
-      const existingUser = await db.lookupUserByEmail(value);
+      // Make sure the new email isn't already in use
+      const existingUser = await db.lookupUser({ email: value });
       if (existingUser) {
         throw new Error("Email already registered.");
       }
@@ -81,7 +89,8 @@ const validateUpdate = [
     .isLength({ min: 3, max: 32 })
     .withMessage("Username must be between 3 and 32 characters.")
     .custom(async (value) => {
-      const existingUser = await db.lookupUserByUsername(value);
+      // Make sure the new username isn't already in use
+      const existingUser = await db.lookupUser({ username: value });
       if (existingUser) {
         throw new Error("Username already exists.");
       }
@@ -95,14 +104,17 @@ const validateUpdate = [
   body("confirmation")
     .trim()
     .custom((value, { req }) => {
+      // If both fields are empty, password was not set, return true
       if (!req.body.password && !value) {
         return true;
       }
 
+      // If password is not empty but confirmatio is, return error
       if (!value) {
         throw new Error("Confirmation is required.");
       }
 
+      // If password does not match confirmation, return error
       if (req.body.password !== value) {
         throw new Error("Confirmation does not match password.");
       }
@@ -114,8 +126,10 @@ const validateUpdate = [
     .notEmpty()
     .withMessage("Current password is required.")
     .bail()
-    .custom((value, { req }) => {
-      const validation = validatePassword(value, req.user.hash);
+    .custom(async (value, { req }) => {
+      // Make sure the password is valid
+      const user = await db.getUserHash(req.user.id);
+      const validation = validatePassword(value, user.hash);
       if (!validation) {
         throw new Error("Current password is incorrect.");
       }
@@ -138,37 +152,40 @@ const register = [
     const hash = generateHash(password);
 
     try {
-      const user = await db.createUser(username, email, hash);
+      // Create the user, sign a token and send the user and token back to the app
+      const data = {
+        username,
+        email,
+        hash,
+      };
+      const user = await db.createUser(data);
       const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
         expiresIn: "72h",
       });
       return res.status(201).json({
         token,
-        user: {
-          id: user.id,
-          email: user.email,
-          username: user.username,
-          author: user.author,
-        },
+        user,
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   },
 ];
 
 const login = (req, res) => {
+  // If the user logged in succesfully sign a token and send the token and the user back to the app
   const token = jwt.sign({ userId: req.user.id }, process.env.SECRET_KEY, {
     expiresIn: "72h",
   });
+  const user = {
+    id: req.user.id,
+    email: req.user.email,
+    username: req.user.username,
+    author: req.user.author,
+  };
   return res.status(200).json({
     token,
-    user: {
-      id: req.user.id,
-      email: req.user.email,
-      username: req.user.username,
-      author: req.user.author,
-    },
+    user,
   });
 };
 
@@ -184,28 +201,28 @@ const update = [
     }
     // If the validation passed, generate a hash with the user password
     const { email, username, password } = matchedData(req);
-    const hash = password ? generateHash(password) : null;
+    const hash = password ? generateHash(password) : undefined;
 
-    // Create the user with the email and hash
+    // Update the user with the email and hash
     try {
-      const updatedUser = await db.updateUser(
-        req.user.id,
+      const options = {
         username,
         email,
         hash,
-      );
-      return res.status(200).json({
-        id: updatedUser.id,
-        email: updatedUser.email,
-        username: updatedUser.username,
-        author: updatedUser.author,
-      });
-    } catch (err) {
-      return next(err);
+      };
+      const updatedUser = await db.updateUser(req.user.id, options);
+      /* 
+      Send the user back to the app. Do not send an updated token 
+      (future consideration maybe, tokens currently only expire through time)
+      */
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return next(error);
     }
   },
 ];
 
+// This is to make any user an author, to test it out for this practice project
 const changeAuthorStatus = async (req, res) => {
   const status = req.params.authorStatus === "true";
   await db.changeAuthorStatus(req.user.id, status);
@@ -215,6 +232,7 @@ const changeAuthorStatus = async (req, res) => {
   });
 };
 
+// Return the current user, used when trying to login with the JWT
 const getCurrentUser = (req, res) => {
   return res.status(200).json({
     id: req.user.id,
