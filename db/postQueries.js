@@ -2,7 +2,7 @@ import { prisma } from "../lib/prisma.js";
 
 // Look up a post by its ID
 const getPost = async (id) => {
-  return await prisma.post.findUnique({
+  return prisma.post.findUnique({
     where: { id },
     include: {
       user: {
@@ -17,7 +17,7 @@ const getPost = async (id) => {
 
 // Look up all posts (optional category)
 const getAllPosts = async (category) => {
-  return await prisma.post.findMany({
+  return prisma.post.findMany({
     where: {
       published: true,
       ...(category && { category }),
@@ -37,8 +37,8 @@ const getAllPosts = async (category) => {
 };
 
 // Look up all posts by the owner
-const getAllUserPosts = async (userId) => {
-  return await prisma.post.findMany({
+const getAllAuthorPosts = async (userId) => {
+  return prisma.post.findMany({
     where: { userId },
     orderBy: {
       createdAt: "desc",
@@ -46,10 +46,29 @@ const getAllUserPosts = async (userId) => {
   });
 };
 
-// Look up a post by its ID and user
-const getUserPost = async (userId, id) => {
-  return await prisma.post.findUnique({
-    where: { userId, id },
+// Create a new post
+const createPost = async (data) => {
+  if (data.published) {
+    data.publishedAt = new Date();
+  }
+  return prisma.post.create({ data });
+};
+
+const updatePost = async (id, data) => {
+  const existingPost = await prisma.post.findUnique({ where: { id } });
+  if (!existingPost) {
+    return null;
+  }
+  if (existingPost.published !== data.published) {
+    if (data.published) {
+      data.publishedAt = new Date();
+    } else {
+      data.publishedAt = null;
+    }
+  }
+  return prisma.post.update({
+    where: { id },
+    data,
     include: {
       user: {
         select: {
@@ -61,64 +80,18 @@ const getUserPost = async (userId, id) => {
   });
 };
 
-// Create a new post
-const createUserPost = async (
-  userId,
-  title,
-  body,
-  category,
-  slug,
-  published,
-) => {
-  const data = {
-    userId,
-    title,
-    body,
-    category,
-    slug,
-    published,
-  };
-  if (published) {
-    data.publishedAt = new Date();
-  }
-  const post = await prisma.post.create({ data });
-  return post;
-};
-
-const updateUserPost = async (userId, id, title, body, category, slug, published) => {
-  const data = {
-    title,
-    body,
-    category,
-    slug,
-    published,
-  };
-  const existingPost = await prisma.post.findUnique({ where: { userId, id } });
-  if (existingPost.published !== published) {
-    if (published) {
-      data.publishedAt = new Date();
-    } else {
-      data.publishedAt = null;
-    }
-  }
-  return await prisma.post.update({
-    where: { userId, id },
-    data,
-  });
-};
-
-const deleteUserPost = async (userId, id) => {
-  return await prisma.post.delete({
-    where: { userId, id },
+// Delete a single post
+const deletePost = async (id) => {
+  return prisma.post.delete({
+    where: { id },
   });
 };
 
 export {
   getPost,
   getAllPosts,
-  getUserPost,
-  getAllUserPosts,
-  createUserPost,
-  updateUserPost,
-  deleteUserPost,
+  getAllAuthorPosts,
+  createPost,
+  updatePost,
+  deletePost,
 };

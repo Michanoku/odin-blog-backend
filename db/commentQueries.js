@@ -1,22 +1,18 @@
 import { prisma } from "../lib/prisma.js";
 
 // Create a new comment
-const createComment = async (userId, postId, body) => {
-  const comment = await prisma.comment.create({
-    data: {
-      userId,
-      postId,
-      body,
-    },
+const createComment = async (data) => {
+  return prisma.comment.create({
+    data,
     include: {
       user: true,
     },
   });
-  return comment;
 };
 
+// Update an existing comment
 const updateComment = async (id, body) => {
-  return await prisma.comment.update({
+  return prisma.comment.update({
     where: { id },
     data: { body },
     include: {
@@ -25,9 +21,28 @@ const updateComment = async (id, body) => {
   });
 };
 
+// Delete an existing comment
 const deleteComment = async (id) => {
-  return await prisma.comment.delete({
+  return prisma.comment.delete({
     where: { id },
+  });
+};
+
+// Look up all comments by their post
+const getAllComments = async (postId) => {
+  return prisma.comment.findMany({
+    where: { postId },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
   });
 };
 
@@ -46,28 +61,10 @@ const getComment = async (id) => {
   });
 };
 
-// Look up all comments by their post
-const getAllComments = async (postId) => {
-  return await prisma.comment.findMany({
-    where: { postId },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
-};
-
 export {
   createComment,
   updateComment,
   deleteComment,
-  getComment,
   getAllComments,
+  getComment,
 };

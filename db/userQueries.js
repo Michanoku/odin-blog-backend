@@ -2,76 +2,90 @@
 import { prisma } from "../lib/prisma.js";
 
 // Create a new user with the email and the hash provided
-const createUser = async (username, email, hash) => {
-  const user = await prisma.user.create({
-    data: {
-      username,
-      email,
-      hash,
+const createUser = async (data) => {
+  return prisma.user.create({
+    data,
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      author: true,
     },
   });
-  return user;
 };
 
-const updateUser = async (id, username, email, hash) => {
+// Update the user from the data received
+const updateUser = async (id, options) => {
   const data = {};
 
-  if (username) {
-    data.username = username;
+  for (const [key, value] of Object.entries(options)) {
+    if (value !== undefined) {
+      data[key] = value;
+    }
   }
 
-  if (email) {
-    data.email = email;
-  }
-
-  if (hash) {
-    data.hash = hash;
-  }
-  return await prisma.user.update({
+  return prisma.user.update({
     where: { id },
     data,
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      author: true,
+    },
   });
 };
 
+// Make the user an author or not
 const changeAuthorStatus = async (id, status) => {
-  return await prisma.user.update({
+  return prisma.user.update({
     where: { id },
     data: { author: status },
   });
 };
 
-// Look up a user by their email
-const lookupUserByEmail = async (email) => {
-  return await prisma.user.findUnique({
-    where: {
-      email,
+// Look up the user while including the hash for login
+const lookupUserForLogin = async (email) => {
+  return prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      author: true,
+      hash: true,
     },
   });
 };
 
-// Look up a user by their username
-const lookupUserByUsername = async (username) => {
-  return await prisma.user.findUnique({
-    where: {
-      username,
+// Look up the user and return a safe object
+const lookupUser = async (where) => {
+  return prisma.user.findUnique({
+    where,
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      author: true,
     },
   });
 };
 
-// Look up a user by their ID
-const lookupUserById = async (userId) => {
-  return await prisma.user.findUnique({
-    where: {
-      id: userId,
+// Get the hash for validator password check
+const getUserHash = async (id) => {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      hash: true,
     },
   });
 };
 
 export {
   createUser,
-  lookupUserByEmail,
-  lookupUserByUsername,
-  lookupUserById,
+  lookupUserForLogin,
+  lookupUser,
   updateUser,
   changeAuthorStatus,
+  getUserHash,
 };
