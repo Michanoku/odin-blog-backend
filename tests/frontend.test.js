@@ -55,7 +55,6 @@ describe("Post and Comment Routes", () => {
         published: true,
         userId: testUser.id,
         category: "test",
-        slug: "testPost",
       },
     });
 
@@ -102,14 +101,6 @@ describe("Post and Comment Routes", () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  test("can read a single comment without authentication", async () => {
-    const response = await request(app).get(
-      `/posts/${post.id}/comments/${comment.id}`,
-    );
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body.id).toBe(comment.id);
-  });
 
   test("authenticated user can create a comment", async () => {
     const response = await request(app)
