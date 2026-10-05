@@ -1,7 +1,7 @@
 import app from "./app.js";
 
 const PORT = process.env.PORT || 3000;
-const isDev = process.env.NODE_END === "development";
+const isDev = process.env.NODE_ENV === "development";
 
 // Server
 if (isDev) {
