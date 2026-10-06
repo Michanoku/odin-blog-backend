@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      process.env.BACKEND_URL,
+      process.env.AUTHOR_URL,
     ],
   }),
 );
