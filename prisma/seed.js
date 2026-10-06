@@ -41,7 +41,6 @@ async function main() {
       title: "My First Post",
       body: "This is the body of my first blog post.",
       category: "General",
-      slug: "my-first-post",
       published: true,
       publishedAt: new Date("2026-09-01"),
       userId: michael.id,
@@ -50,10 +49,9 @@ async function main() {
 
   const post2 = await prisma.post.create({
     data: {
-      title: "A Day in Morioka",
-      body: "Today I went for a walk around Morioka...",
+      title: "A Day in Tokyo",
+      body: "Today I went for a walk around Tokyo...",
       category: "Travel",
-      slug: "a-day-in-morioka",
       published: true,
       publishedAt: new Date("2026-09-05"),
       userId: michael.id,
@@ -65,7 +63,6 @@ async function main() {
       title: "Unfinished Thoughts",
       body: "This post isn't ready for publication yet.",
       category: "Personal",
-      slug: "unfinished-thoughts",
       published: false,
       userId: michael.id,
     },

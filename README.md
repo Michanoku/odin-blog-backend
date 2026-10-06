@@ -2,6 +2,16 @@
 
 Backend API for The Odin Project Blog project, built with **Node.js, Express, Prisma, and PostgreSQL**.
 
+## Project Repositories
+
+The Odin Project Blog is split across three repositories:
+
+| Part                | Repository                                                                              |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| **Backend**         | **This repository**                                                                     |
+| **Frontend**        | [odin-blog-frontend](https://github.com/Michanoku/odin-blog-frontend)                   |
+| **Author**          | [odin-blog-author](https://github.com/Michanoku/odin-blog-author)                       |
+
 ## Features
 
 * User registration and JWT-based login
