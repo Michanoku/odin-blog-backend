@@ -38,7 +38,7 @@ const postsCreate = async (req, res, next) => {
       title: req.body.postTitle,
       body: req.body.postBody,
       category,
-      published: req.body.published === "on",
+      published: req.body.published,
     };
     const post = await createPost(data);
     return res.status(201).json(post);
